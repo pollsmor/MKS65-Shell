@@ -18,4 +18,5 @@ run:
 
 clean:
 	rm *.o
+	rm *.gch
 	rm shell
