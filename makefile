@@ -1,5 +1,5 @@
 all: parse.o redirect.o pipes.o main.o
-	gcc -o shell parse.o redirect.o pipes.o main.o
+	gcc -o myshell parse.o redirect.o pipes.o main.o
 
 parse.o: parse.c parse.h redirect.h pipes.h
 	gcc -c parse.c
@@ -14,9 +14,9 @@ main.o: main.c parse.h
 	gcc -c main.c
 
 run:
-	./shell
+	./myshell
 
 clean:
+	rm myshell
 	rm *.o
 	rm *.gch
-	rm shell
