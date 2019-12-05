@@ -12,12 +12,12 @@ int main() {
   char cwd[200];
   int status;
   int exited = 0;
+  int num_commands = 0;
 
   while (exited == 0) {
     printf("%s$ ", getcwd(cwd, 200));
     fgets(input, 300, stdin);
     input[strlen(input) - 1] = '\0'; //strip the newline at the end
-    char ** args = parse_args(input);
 
     if (strcmp(args[0], "exit") == 0) {
       exited = 1; //keep track of whether while loop should exit
@@ -28,8 +28,13 @@ int main() {
     }
 
     if (input[0] != '\0') {
-      exec_args(args, &status);
-      input[0] = '\0'; //clear the input so doesn't keep running
+      char ** commands = semicolon_parse(input, &commands);
+
+      for (int i = 0; i < commands; i++) {
+        char ** args = parse_args([i]);
+        exec_args(args, &status);
+        input[0] = '\0'; //clear the input so doesn't keep running
+      }
     }
   }
 
