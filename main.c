@@ -8,33 +8,25 @@
 #include "pipes.h"
 
 int main() {
+  printf("\033[H\033[J"); //clear the shell
   char input[300] = ""; //support commands up to 300 characters long
   char cwd[200];
   int status;
   int exited = 0;
-  int num_commands = 0;
 
   while (exited == 0) {
     printf("%s$ ", getcwd(cwd, 200));
     fgets(input, 300, stdin);
     input[strlen(input) - 1] = '\0'; //strip the newline at the end
 
-    if (strcmp(args[0], "exit") == 0) {
-      exited = 1; //keep track of whether while loop should exit
-    }
-
-    if (strcmp(args[0], "cd") == 0) {
-      chdir(args[1]);
-    }
-
-    if (input[0] != '\0') {
-      char ** commands = semicolon_parse(input, &commands);
-
-      for (int i = 0; i < commands; i++) {
-        char ** args = parse_args([i]);
-        exec_args(args, &status);
-        input[0] = '\0'; //clear the input so doesn't keep running
+    if (input[0] != '\0') { //only run all this stuff if the user actually typed something in
+      if (strchr(input, ';') == NULL) { //no semicolons, only 1 command
+        exec_args(input, &exited, &status);
+      } else { //there are semicolons
+        semicolon_exec(input, &exited, &status);
       }
+
+      input[0] = '\0'; //clear the input so doesn't keep running
     }
   }
 

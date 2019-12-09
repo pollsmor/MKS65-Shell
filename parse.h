@@ -1,5 +1,9 @@
-char ** parse_args(char * line);
+void strip_leading_spaces(char *str);
 
-void exec_args(char ** parsed, int *status);
+char ** parse_args(char *line);
 
-char ** semicolon_parse(char * line);
+void exec_args(char * line, int *exited, int *status);
+
+char ** semicolon_parse(char *line, int *num_commands);
+
+void semicolon_exec(char *line, int *exited, int *status);

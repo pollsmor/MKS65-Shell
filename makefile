@@ -17,6 +17,6 @@ run:
 	./myshell
 
 clean:
-	rm myshell
 	rm *.o
+	rm myshell
 	rm *.gch
