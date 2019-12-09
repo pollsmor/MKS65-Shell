@@ -5,7 +5,6 @@
 #include <sys/wait.h>
 
 void strip_leading_spaces(char *str) {
-  printf("str: %s \n", str);
   int i = 0; //find index of the first character that isn't whitepsace
   while (str[i] == ' ')
     i++;
