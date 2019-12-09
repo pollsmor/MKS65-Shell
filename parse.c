@@ -30,6 +30,7 @@ char ** parse_args(char *line) {
     i++;
   }
 
+  output[i] = NULL;
   return output;
 }
 
