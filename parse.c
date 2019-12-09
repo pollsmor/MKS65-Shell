@@ -4,21 +4,9 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-/*
-char * strip_leading_spaces(char *str) {
-  char *output;
-  int i = 0;
-  while (str[i] == ' ') {
-    i++;
-  }
-
-  strncpy(output, str + i, 8);
-  return output;
-}
-*/
-
 void strip_leading_spaces(char *str) {
-  int i = 0;
+  printf("str: %s \n", str);
+  int i = 0; //find index of the first character that isn't whitepsace
   while (str[i] == ' ')
     i++;
 
@@ -29,13 +17,11 @@ void strip_leading_spaces(char *str) {
     str[j] = curr;
     j++;
   }
-
-  str[j] = '\0';
 }
 
 //Returns a list of arguments
 char ** parse_args(char *line) {
-  char ** output = malloc(5 * 8);
+  char ** output = malloc(100); //space to fit all arguments
   char *curr = line;
   strip_leading_spaces(line);
 
@@ -61,7 +47,6 @@ void exec_args(char * line, int *exited, int *status) {
     return;
   }
 
-  printf("what");
   pid_t pid = fork();
 
   if (pid == 0) { //is the child
@@ -75,7 +60,7 @@ void exec_args(char * line, int *exited, int *status) {
 }
 
 char ** semicolon_parse(char *line, int *num_commands) {
-  char ** output = malloc(5 * 40);
+  char ** output = malloc(500);
   char *curr = line;
 
   while (curr != NULL) {
