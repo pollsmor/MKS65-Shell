@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 
 void strip_leading_spaces(char *str) {
   int i = 0; //find index of the first character that isn't whitepsace
@@ -19,24 +20,26 @@ void strip_leading_spaces(char *str) {
 }
 
 //Returns a list of arguments
-char ** parse_args(char *line) {
+char ** parse_args(char *line, int *num_args) {
   char ** output = malloc(100); //space to fit all arguments
   char *curr = line;
   strip_leading_spaces(line);
 
-  int i = 0;
   while (curr != NULL) {
-    output[i] = strsep(&curr, " ");
-    i++;
+    output[*num_args] = strsep(&curr, " ");
+    (*num_args)++;
   }
 
-  output[i] = NULL;
+  output[*num_args] = NULL;
   return output;
 }
 
 //Take in the list of arguments from parse_args
 void exec_args(char * line, int *exited, int *status) {
-  char ** parsed = parse_args(line);
+  int num_args = 0;
+  char lineCpy[300];
+  strncpy(lineCpy, line, 300);
+  char ** parsed = parse_args(line, &num_args);
   if (strcmp(parsed[0], "exit") == 0) {
     *exited = 1; //keep track of whether while loop should exit
     return;
@@ -50,8 +53,19 @@ void exec_args(char * line, int *exited, int *status) {
   pid_t pid = fork();
 
   if (pid == 0) { //is the child
-    execvp(parsed[0], parsed);
-    exit(0);
+    if (strchr(lineCpy, '>') == NULL && strchr(lineCpy, '<') == NULL) {
+      execvp(parsed[0], parsed);
+      exit(0);
+    } else { //since you are using redirection, assuming you have at least 3 args
+      if (strcmp(parsed[num_args - 2], ">") == 0) { //output redirection
+        char *file = parsed[num_args - 1];
+        parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
+        int fd = open(file, O_CREAT | O_WRONLY, 0640);
+        dup2(fd, STDOUT_FILENO);
+        execvp(parsed[0], parsed);
+        exit(0);
+      }
+    }
   } else { //is the parent
     wait(status); //wait for child to exit first
     free(parsed);
