@@ -54,9 +54,22 @@ void exec_args(char * line, int *exited, int *status) {
   pid_t pid = fork();
 
   if (pid == 0) { //is the child
-    if (strchr(lineCpy, '>') == NULL && strchr(lineCpy, '<') == NULL) {
+    if (strchr(lineCpy, '>') == NULL && strchr(lineCpy, '<') == NULL && strchr(lineCpy, '|') == NULL) {
       execvp(parsed[0], parsed);
+      printf("")
       exit(0);
+    } else if (strcmp(parsed[num_args - 2], "|") == 0) { //piping
+      char *program = parsed[num_args - 1];
+      parsed[num_args - 2] = NULL; //sp that execvp doesn't use the piping stuff as an arg
+      int tempfile = open("tempfile.txt", O_CREAT | O_WRONLY | O_TRUNC, 0640);
+      dup2(tempfile, STDOUT_FILENO);
+      execvp(parsed[0], parsed); //will put output of this in tempfile.txt
+      lseek(tempfile, 0, SEEK_SET); //go back to beginning of file to read
+      //execlp(program, program, "tempfile.txt", NULL);
+      printf("LULULULUL \n");
+      execlp("ls", "ls", NULL);
+
+      close(tempfile);
     } else { //since you are using redirection, assuming you have at least 3 args
       if (strcmp(parsed[num_args - 2], ">") == 0) { //output redirection
         char *file = parsed[num_args - 1];
@@ -65,6 +78,7 @@ void exec_args(char * line, int *exited, int *status) {
         dup2(fd, STDOUT_FILENO);
         close(fd);
         execvp(parsed[0], parsed);
+        printf("Failed to redirect output. \n");
         exit(0);
       } else { //input redirection
         char *file = parsed[num_args - 1];
@@ -74,8 +88,9 @@ void exec_args(char * line, int *exited, int *status) {
         dup2(fd, STDIN_FILENO);
         execvp(parsed[0], parsed);
 
-        dup2(stdin_backup, STDIN_FILENO);
-        close(stdin_backup);
+        //dup2(stdin_backup, STDIN_FILENO);
+        //close(stdin_backup);
+        printf("Failed to redirect input. \n");
         exit(0);
       }
     }

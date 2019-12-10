@@ -1,1 +1,13 @@
-aaaaaaaaaaaaaaaaaaaaaaa
+total 52
+-rw-r--r-- 1 kli00 jadw   851 Dec  9 22:16 main.c
+-rw-r--r-- 1 kli00 jadw  2384 Dec  9 22:16 main.o
+-rw-r--r-- 1 kli00 jadw   253 Dec  9 22:16 makefile
+-rwxr-xr-x 1 kli00 jadw 13528 Dec  9 22:16 myshell
+-rw-r--r-- 1 kli00 jadw  2867 Dec  9 22:15 parse.c
+-rw-r--r-- 1 kli00 jadw   259 Dec  9 22:15 parse.h
+-rw-r--r-- 1 kli00 jadw  4816 Dec  9 22:16 parse.o
+-rw-r--r-- 1 kli00 jadw     0 Dec  9 17:24 pipes.c
+-rw-r--r-- 1 kli00 jadw     0 Dec  9 17:24 pipes.h
+-rw-r--r-- 1 kli00 jadw   936 Dec  9 22:16 pipes.o
+-rw-r--r-- 1 kli00 jadw   256 Dec  9 22:15 README.md
+-rw-r--r-- 1 kli00 jadw     0 Dec  9 22:16 testfile.txt
