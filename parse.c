@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <signal.h>
 
 void strip_leading_spaces(char *str) {
   int i = 0; //find index of the first character that isn't whitepsace
@@ -60,9 +61,21 @@ void exec_args(char * line, int *exited, int *status) {
       if (strcmp(parsed[num_args - 2], ">") == 0) { //output redirection
         char *file = parsed[num_args - 1];
         parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
-        int fd = open(file, O_CREAT | O_WRONLY, 0640);
+        int fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0640);
         dup2(fd, STDOUT_FILENO);
+        close(fd);
         execvp(parsed[0], parsed);
+        exit(0);
+      } else { //input redirection
+        char *file = parsed[num_args - 1];
+        parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
+        int fd = open(file, O_RDONLY);
+        int stdin_backup = dup(STDIN_FILENO);
+        dup2(fd, STDIN_FILENO);
+        execvp(parsed[0], parsed);
+
+        dup2(stdin_backup, STDIN_FILENO);
+        close(stdin_backup);
         exit(0);
       }
     }
