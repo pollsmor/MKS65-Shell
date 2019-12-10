@@ -4,7 +4,6 @@
 #include <errno.h>
 
 #include "parse.h"
-#include "redirect.h"
 #include "pipes.h"
 
 int main() {
