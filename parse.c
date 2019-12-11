@@ -103,6 +103,7 @@ void exec_args(char * line, int *exited, int *status) {
     }
   } else { //is the parent
     wait(status); //wait for child to exit first
+    remove("tempfile.txt");
     free(parsed);
     return;
   }
