@@ -56,20 +56,27 @@ void exec_args(char * line, int *exited, int *status) {
   if (pid == 0) { //is the child
     if (strchr(lineCpy, '>') == NULL && strchr(lineCpy, '<') == NULL && strchr(lineCpy, '|') == NULL) {
       execvp(parsed[0], parsed);
-      printf("")
+      printf("Failed to run program. \n");
       exit(0);
     } else if (strcmp(parsed[num_args - 2], "|") == 0) { //piping
       char *program = parsed[num_args - 1];
       parsed[num_args - 2] = NULL; //sp that execvp doesn't use the piping stuff as an arg
       int tempfile = open("tempfile.txt", O_CREAT | O_WRONLY | O_TRUNC, 0640);
+      int stdout_backup = dup(STDOUT_FILENO);
       dup2(tempfile, STDOUT_FILENO);
-      execvp(parsed[0], parsed); //will put output of this in tempfile.txt
-      lseek(tempfile, 0, SEEK_SET); //go back to beginning of file to read
-      //execlp(program, program, "tempfile.txt", NULL);
-      printf("LULULULUL \n");
-      execlp("ls", "ls", NULL);
 
-      close(tempfile);
+      pid_t pid2 = fork(); //need another child to run 2 execvps
+
+      if (pid2 == 0) { //is the child
+        execvp(parsed[0], parsed); //will put output of this in tempfile.txt
+      } else { //is the parent
+        wait(status); //wait for child to exit first
+        close(tempfile);
+        dup2(stdout_backup, STDOUT_FILENO);
+        execlp(program, program, "tempfile.txt", NULL);
+        printf("Failed to run program. \n");
+        exit(0);
+      }
     } else { //since you are using redirection, assuming you have at least 3 args
       if (strcmp(parsed[num_args - 2], ">") == 0) { //output redirection
         char *file = parsed[num_args - 1];
@@ -84,7 +91,7 @@ void exec_args(char * line, int *exited, int *status) {
         char *file = parsed[num_args - 1];
         parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
         int fd = open(file, O_RDONLY);
-        int stdin_backup = dup(STDIN_FILENO);
+        //int stdin_backup = dup(STDIN_FILENO);
         dup2(fd, STDIN_FILENO);
         execvp(parsed[0], parsed);
 
