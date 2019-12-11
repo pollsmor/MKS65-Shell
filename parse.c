@@ -91,12 +91,9 @@ void exec_args(char * line, int *exited, int *status) {
         char *file = parsed[num_args - 1];
         parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
         int fd = open(file, O_RDONLY);
-        //int stdin_backup = dup(STDIN_FILENO);
         dup2(fd, STDIN_FILENO);
+        close(fd);
         execvp(parsed[0], parsed);
-
-        //dup2(stdin_backup, STDIN_FILENO);
-        //close(stdin_backup);
         printf("Failed to redirect input. \n");
         exit(0);
       }
