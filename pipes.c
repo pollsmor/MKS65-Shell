@@ -18,7 +18,7 @@ void my_pipe(char ** args, int num_args) {
     printf("Failed to run command. \n");
     exit(1);
   } else { //is the parent
-    wait(0);
+    wait(NULL);
     close(tempfile);
     dup2(stdout_backup, STDOUT_FILENO);
     execlp(program, program, "tempfile.txt", NULL);

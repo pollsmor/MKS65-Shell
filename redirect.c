@@ -15,5 +15,12 @@ void redir_out(char ** args, int num_args) {
 }
 
 void redir_in(char ** args, int num_args) {
-
+  char *file = args[num_args - 1];
+  args[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
+  int fd = open(file, O_RDONLY);
+  dup2(fd, STDIN_FILENO);
+  close(fd);
+  execvp(args[0], args);
+  printf("Failed to redirect input. \n");
+  exit(1);
 }

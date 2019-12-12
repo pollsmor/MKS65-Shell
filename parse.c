@@ -64,19 +64,11 @@ void exec_args(char * line, int *exited) {
       if (strcmp(parsed[num_args - 2], ">") == 0) { //output redirection
         redir_out(parsed, num_args);
       } else { //input redirection
-        char *file = parsed[num_args - 1];
-        parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
-        int fd = open(file, O_RDONLY);
-        dup2(fd, STDIN_FILENO);
-        close(fd);
-        execvp(parsed[0], parsed);
-        printf("Failed to redirect input. \n");
-        exit(1);
+        redir_in(parsed, num_args);
       }
     }
   } else { //is the parent
-    int status;
-    wait(&status); //wait for child to exit first
+    wait(NULL); //wait for child to exit first
     remove("tempfile.txt"); //if piping is done
     free(parsed);
     return;
