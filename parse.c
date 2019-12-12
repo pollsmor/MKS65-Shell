@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
-#include <signal.h>
+#include "pipes.h"
 
 void strip_leading_spaces(char *str) {
   int i = 0; //find index of the first character that isn't whitepsace
@@ -24,7 +24,6 @@ void strip_leading_spaces(char *str) {
 char ** parse_args(char *line, int *num_args) {
   char ** output = malloc(100); //space to fit all arguments
   char *curr = line;
-  strip_leading_spaces(line);
 
   while (curr != NULL) {
     output[*num_args] = strsep(&curr, " ");
@@ -36,7 +35,7 @@ char ** parse_args(char *line, int *num_args) {
 }
 
 //Take in the list of arguments from parse_args
-void exec_args(char * line, int *exited, int *status) {
+void exec_args(char * line, int *exited) {
   int num_args = 0;
   char lineCpy[300];
   strncpy(lineCpy, line, 300);
@@ -56,27 +55,10 @@ void exec_args(char * line, int *exited, int *status) {
   if (pid == 0) { //is the child
     if (strchr(lineCpy, '>') == NULL && strchr(lineCpy, '<') == NULL && strchr(lineCpy, '|') == NULL) {
       execvp(parsed[0], parsed);
-      printf("Failed to run program. \n");
+      printf("%s: command not found \n", lineCpy);
       exit(0);
     } else if (strcmp(parsed[num_args - 2], "|") == 0) { //piping
-      char *program = parsed[num_args - 1];
-      parsed[num_args - 2] = NULL; //sp that execvp doesn't use the piping stuff as an arg
-      int tempfile = open("tempfile.txt", O_CREAT | O_WRONLY | O_TRUNC, 0640);
-      int stdout_backup = dup(STDOUT_FILENO);
-      dup2(tempfile, STDOUT_FILENO);
-
-      pid_t pid2 = fork(); //need another child to run 2 execvps
-
-      if (pid2 == 0) { //is the child
-        execvp(parsed[0], parsed); //will put output of this in tempfile.txt
-      } else { //is the parent
-        wait(status); //wait for child to exit first
-        close(tempfile);
-        dup2(stdout_backup, STDOUT_FILENO);
-        execlp(program, program, "tempfile.txt", NULL);
-        printf("Failed to run program. \n");
-        exit(0);
-      }
+      my_pipe(parsed, num_args);
     } else { //since you are using redirection, assuming you have at least 3 args
       if (strcmp(parsed[num_args - 2], ">") == 0) { //output redirection
         char *file = parsed[num_args - 1];
@@ -86,7 +68,7 @@ void exec_args(char * line, int *exited, int *status) {
         close(fd);
         execvp(parsed[0], parsed);
         printf("Failed to redirect output. \n");
-        exit(0);
+        exit(1);
       } else { //input redirection
         char *file = parsed[num_args - 1];
         parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
@@ -95,12 +77,13 @@ void exec_args(char * line, int *exited, int *status) {
         close(fd);
         execvp(parsed[0], parsed);
         printf("Failed to redirect input. \n");
-        exit(0);
+        exit(1);
       }
     }
   } else { //is the parent
-    wait(status); //wait for child to exit first
-    remove("tempfile.txt");
+    int status;
+    wait(&status); //wait for child to exit first
+    remove("tempfile.txt"); //if piping is done
     free(parsed);
     return;
   }
@@ -118,7 +101,7 @@ char ** semicolon_parse(char *line, int *num_commands) {
   return output;
 }
 
-void semicolon_exec(char *line, int *exited, int *status) {
+void semicolon_exec(char *line, int *exited) {
   int num_commands = 0;
   char ** commands = semicolon_parse(line, &num_commands);
 
@@ -126,7 +109,7 @@ void semicolon_exec(char *line, int *exited, int *status) {
     if (*exited == 1)
       return;
 
-    exec_args(commands[i], exited, status);
+    exec_args(commands[i], exited);
   }
 
   free(commands);
