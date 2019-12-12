@@ -54,18 +54,14 @@ void exec_args(char * line, int *exited) {
   pid_t pid = fork();
 
   if (pid == 0) { //is the child
-    if (strchr(lineCpy, '>') == NULL && strchr(lineCpy, '<') == NULL && strchr(lineCpy, '|') == NULL) {
+    if (strchr(lineCpy, '>') != NULL) redir_out(parsed, num_args);
+    if (strchr(lineCpy, '<') != NULL) redir_in(parsed, num_args);
+    if (strchr(lineCpy, '|') != NULL) my_pipe(parsed, num_args);
+
+    else { //normal exec
       execvp(parsed[0], parsed);
       printf("%s: command not found \n", lineCpy);
       exit(0);
-    } else if (strcmp(parsed[num_args - 2], "|") == 0) { //piping
-      my_pipe(parsed, num_args);
-    } else { //since you are using redirection, assuming you have at least 3 args
-      if (strcmp(parsed[num_args - 2], ">") == 0) { //output redirection
-        redir_out(parsed, num_args);
-      } else { //input redirection
-        redir_in(parsed, num_args);
-      }
     }
   } else { //is the parent
     wait(NULL); //wait for child to exit first
