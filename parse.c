@@ -37,8 +37,6 @@ void strip_trailing_spaces(char *str) {
 //Returns a list of arguments
 char ** parse_args(char *line, int *num_args) {
   char ** output = malloc(100); //space to fit all arguments
-  strip_leading_spaces(line); //for example:                    ls
-  strip_trailing_spaces(line); //for example: ls -al             <enter>
   char *curr = line;
 
   while (curr != NULL) {
@@ -52,6 +50,9 @@ char ** parse_args(char *line, int *num_args) {
 
 //Take in the list of arguments from parse_args
 void exec_args(char * line, int *exited) {
+  strip_leading_spaces(line); //for example:                    ls
+  strip_trailing_spaces(line); //for example: ls -al             <enter>
+
   int num_args = 0;
   char lineCpy[300];
   strncpy(lineCpy, line, 300);
