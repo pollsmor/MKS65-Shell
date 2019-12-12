@@ -1,11 +1,11 @@
 # MKS65-Shell
-Shell project for Systems (tentative due date of 2019-12-13)
+Shell project for Systems
 
 **Features implemented**
 - Reads commands from the user via stdin
   - ``` exit ``` is hardcoded
-  - ``` cd ``` is hardcoded: has error checking
-- Commands can be separated via semicolon 
+  - ``` cd ``` is hardcoded; has error checking
+- Commands can be separated via semicolons
   - [BUG] At the moment, there cannot be any space to the left or right of a semicolon, will try to fix
 - Very basic input and output redirection (only < and >)
 - Piping (done via dup and dup2 and not popen() - as far as I know this hasn't caused issues with other parts of the shell)
@@ -13,6 +13,7 @@ Shell project for Systems (tentative due date of 2019-12-13)
 
 **Features attempted but couldn't implement**
 - Cannot string together input and output redirection due to method of parsing
+- The use of status macros (decided it was not critical enough of a feature to include to meet the deadline)
 
 **Other bugs**
 - When exiting from programs that continuously read from stdin (like tr) with Ctrl+C, you go right to Bash, not this shell.
