@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include "redirect.h"
 #include "pipes.h"
 
 void strip_leading_spaces(char *str) {
@@ -61,14 +62,7 @@ void exec_args(char * line, int *exited) {
       my_pipe(parsed, num_args);
     } else { //since you are using redirection, assuming you have at least 3 args
       if (strcmp(parsed[num_args - 2], ">") == 0) { //output redirection
-        char *file = parsed[num_args - 1];
-        parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
-        int fd = open(file, O_CREAT | O_WRONLY | O_TRUNC, 0640);
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
-        execvp(parsed[0], parsed);
-        printf("Failed to redirect output. \n");
-        exit(1);
+        redir_out(parsed, num_args);
       } else { //input redirection
         char *file = parsed[num_args - 1];
         parsed[num_args - 2] = NULL; //so that execvp doesn't use the redirection stuff as an arg
