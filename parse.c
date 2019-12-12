@@ -22,10 +22,24 @@ void strip_leading_spaces(char *str) {
   }
 }
 
+void strip_trailing_spaces(char *str) {
+  int i = 0; //find index of where there are 2 space characters in a row
+  while (i < (int)strlen(str)) {
+    if (str[i] == ' ' && str[i + 1] == ' ') {
+      str[i] = '\0';
+      return;
+    }
+
+    i++;
+  }
+}
+
 //Returns a list of arguments
 char ** parse_args(char *line, int *num_args) {
   char ** output = malloc(100); //space to fit all arguments
   char *curr = line;
+  strip_leading_spaces(line); //for example:                    ls
+  strip_trailing_spaces(line); //for example: ls -al             <enter>
 
   while (curr != NULL) {
     output[*num_args] = strsep(&curr, " ");
@@ -42,7 +56,7 @@ void exec_args(char * line, int *exited) {
   char lineCpy[300];
   strncpy(lineCpy, line, 300);
   char ** parsed = parse_args(line, &num_args);
-  
+
   if (strcmp(parsed[0], "exit") == 0) {
     *exited = 1; //keep track of whether while loop should exit
     return;

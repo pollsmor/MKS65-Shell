@@ -6,7 +6,7 @@ Shell project for Systems
   - ``` exit ``` is hardcoded
   - ``` cd ``` is hardcoded; has error checking
 - Commands can be separated via semicolons
-  - [BUG] At the moment, there cannot be any space to the left or right of a semicolon, will try to fix
+  - Leading and trailing spaces are removed. That means something like ```          ls -al                    ;           echo B``` works.
 - Very basic input and output redirection (only < and >)
 - Piping (done via dup and dup2 and not popen() - as far as I know this hasn't caused issues with other parts of the shell)
   - [BUG] Due to using an intermediary file for the piping feature, something like ``` ls | wc ``` will show "tempfile.txt" in the 4th column. This doesn't happen in Bash - it only shows 3 columns.
@@ -21,13 +21,13 @@ Shell project for Systems
 **Function headers**
 - parse.h
   - ``` void strip_leading_spaces(char *str); ```
-  - ``` char ** parse_args(char *line, int *num_args); ``` 
-  - ``` void exec_args(char * line, int *exited); ``` 
-  - ``` char ** semicolon_parse(char *line, int *num_commands); ``` 
-  - ``` void semicolon_exec(char *line, int *exited); ``` 
+  - ``` void strip_trailing_spaces(char *str); ```
+  - ``` char ** parse_args(char *line, int *num_args); ```
+  - ``` void exec_args(char * line, int *exited); ```
+  - ``` char ** semicolon_parse(char *line, int *num_commands); ```
+  - ``` void semicolon_exec(char *line, int *exited); ```
 - redirect.h
-  - ``` void redir_out(char ** args, int num_args); ``` 
-  - ``` void redir_in(char ** args, int num_args); ``` 
+  - ``` void redir_out(char ** args, int num_args); ```
+  - ``` void redir_in(char ** args, int num_args); ```
 - pipes.h
-  - ``` void my_pipe(char ** args, int num_args); ``` 
-  
+  - ``` void my_pipe(char ** args, int num_args); ```

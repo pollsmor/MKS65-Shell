@@ -10,11 +10,10 @@ int main() {
   char cwd[200];
   int exited = 0;
 
-  while (exited == 0) {
+  while (!exited) {
     printf("%s$ ", getcwd(cwd, 200));
     fgets(input, 300, stdin);
     input[strlen(input) - 1] = '\0'; //strip the newline at the end
-    strip_leading_spaces(input); //for example:                    ls
 
     if (input[0] != '\0') { //only run all this stuff if the user actually typed something in
       if (strchr(input, ';') == NULL) { //no semicolons, only 1 command

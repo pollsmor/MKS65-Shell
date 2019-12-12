@@ -3,6 +3,11 @@ void strip_leading_spaces(char *str);
 
 //Take a string, and remove any leading spaces. Done so in-place, not by returning a new string.
 
+void strip_trailing_spaces(char *str);
+////str: an input string
+
+//Take a string, and remove any trailing spaces. Done so in-place, not by returning a new string.
+
 char ** parse_args(char *line, int *num_args);
 //line: passed from exec_args; whatever you typed in from the terminal
 //num_args: passed from exec_args; gets incremented everytime strsep is run on space characters
