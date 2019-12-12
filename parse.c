@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <errno.h>
 #include "redirect.h"
 #include "pipes.h"
 
@@ -41,13 +42,20 @@ void exec_args(char * line, int *exited) {
   char lineCpy[300];
   strncpy(lineCpy, line, 300);
   char ** parsed = parse_args(line, &num_args);
+  
   if (strcmp(parsed[0], "exit") == 0) {
     *exited = 1; //keep track of whether while loop should exit
     return;
   }
 
   if (strcmp(parsed[0], "cd") == 0) {
-    chdir(parsed[1]);
+    if (parsed[2] != NULL) {
+      printf("cd: too many arguments \n");
+      return;
+    }
+
+    int error = chdir(parsed[1]);
+    if (error != 0) printf("cd: %s \n", strerror(errno));
     return;
   }
 
