@@ -3,7 +3,6 @@
 #include <unistd.h>
 
 #include "parse.h"
-#include "pipes.h"
 
 int main() {
   printf("\033[H\033[J"); //clear the shell
