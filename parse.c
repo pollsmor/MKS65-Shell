@@ -64,6 +64,8 @@ void exec_args(char * line, int *exited) {
   }
 
   if (strcmp(parsed[0], "cd") == 0) {
+    if (parsed[1] == NULL) return;
+
     if (parsed[2] != NULL) {
       printf("cd: too many arguments \n");
       return;
