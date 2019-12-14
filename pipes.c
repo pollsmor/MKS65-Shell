@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 
 void my_pipe(char ** args, int num_args) {
-  char *program = args[num_args - 1]; //ls | wc --> would be wc
+  char *program = args[num_args - 1];
   args[num_args - 2] = NULL; //so that execvp doesn't use the | onwards as args
   int tempfile = open("tempfile.txt", O_CREAT | O_WRONLY | O_TRUNC, 0640); //temp file to write to for piping
   int stdout_backup = dup(STDOUT_FILENO);

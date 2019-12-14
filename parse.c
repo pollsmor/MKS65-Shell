@@ -79,6 +79,7 @@ void exec_args(char * line, int *exited) {
   pid_t pid = fork();
 
   if (pid == 0) { //is the child
+    if (strchr(lineCpy, '>') && strchr(lineCpy, '<')) redir_in_out(parsed, num_args);
     if (strchr(lineCpy, '>') != NULL) redir_out(parsed, num_args);
     if (strchr(lineCpy, '<') != NULL) redir_in(parsed, num_args);
     if (strchr(lineCpy, '|') != NULL) my_pipe(parsed, num_args);

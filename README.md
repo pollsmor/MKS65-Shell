@@ -6,15 +6,16 @@ Shell project for Systems
   - ``` exit ``` is hardcoded
   - ``` cd ``` is hardcoded; has error checking
 - Commands can be separated via semicolons
-  - Leading and trailing spaces are removed. That means something like <pre>```          ls -al                    ;           echo B```</pre> works. Note: this doesn't work with the piping feature due to the parsing method.
-  
-- Very basic input and output redirection (only < and >)
+  - Leading and trailing spaces are removed. That means something like <pre>```          ls -al                    ;           echo B```</pre> works.
+
+  - Note: this only works with an entire command, not individual tokens. ls         -al would not work.
+
+- Basic input and output redirection (only <, >, and < >)
 - Piping (done via dup and dup2 and not popen() - as far as I know this hasn't caused issues with other parts of the shell)
   - [BUG] Due to using an intermediary file for the piping feature, something like ``` ls | wc ``` will show "tempfile.txt" in the 4th column. This doesn't happen in Bash - it only shows 3 columns.
 
 **Features attempted but couldn't implement**
-- Cannot string together input and output redirection due to method of parsing
-- The use of status macros (decided it was not critical enough of a feature to include to meet the deadline)
+- The use of status macros (not sure how I can implement them into my program)
 
 **Other bugs**
 - When exiting from programs that continuously read from stdin (like tr) with Ctrl+C, you go right to Bash, not this shell.
@@ -30,5 +31,6 @@ Shell project for Systems
 - redirect.h
   - ``` void redir_out(char ** args, int num_args); ```
   - ``` void redir_in(char ** args, int num_args); ```
+  - ``` void redir_in_out(char ** args, int num_args); ```
 - pipes.h
   - ``` void my_pipe(char ** args, int num_args); ```

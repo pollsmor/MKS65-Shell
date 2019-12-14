@@ -24,3 +24,13 @@ void redir_in(char ** args, int num_args) {
   printf("Failed to redirect input. \n");
   exit(1);
 }
+
+void redir_in_out(char ** args, int num_args) {
+  char *output_file = args[num_args - 1];
+  int fd = open(output_file, O_CREAT | O_WRONLY | O_TRUNC, 0640);
+  dup2(fd, STDOUT_FILENO);
+  close(fd);
+
+  args[num_args - 2] = NULL;
+  redir_in(args, num_args - 2);
+}
