@@ -86,6 +86,7 @@ void exec_args(char * line, int *exited) {
 
     else { //normal exec
       execvp(parsed[0], parsed);
+
       printf("%s: command not found \n", lineCpy);
       exit(0);
     }

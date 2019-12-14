@@ -5,7 +5,7 @@
 #include "parse.h"
 
 int main() {
-  printf("\033[H\033[J"); //clear the shell
+  //printf("\033[H\033[J"); //clear the shell - oops, this breaks the test_cmds file
   char input[300] = ""; //support commands up to 300 characters long
   char cwd[200];
   int exited = 0;
