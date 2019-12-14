@@ -8,7 +8,7 @@ Shell project for Systems
 - Commands can be separated via semicolons
   - Leading and trailing spaces are removed. That means something like <pre>```          ls -al                    ;           echo B```</pre> works.
     - Note: this only works with an entire command, not individual tokens. ls         -al would not work.
-    - Note 2: this doesn't work for redirection and piping either due to the parsing method. There must be only one space to the left and right of a "<", ">", or "|".
+    - Note 2: this doesn't work for redirection and piping either due to the parsing method. There must be only one space to the left and right of a <, >, or |.
 
 - Basic input and output redirection (only <, >, and < >)
 - Piping (done via dup and dup2 and not popen() - as far as I know this hasn't caused issues with other parts of the shell)
