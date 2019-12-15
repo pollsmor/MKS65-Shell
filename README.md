@@ -19,7 +19,7 @@ Shell project for Systems
 
 **Other bugs**
 - When feeding in a test commands file via ./myshell < {file}, at the end it prints the current working directory the same amount of times as commands in the file. It doesn't happen when I don't print the cwd in main.c, but I think how it currently works is the better of two evils.
-- When exiting from programs that continuously read from stdin (like tr) with Ctrl+C, you go right to Bash, not this shell.
+- When exiting from programs that continuously read from stdin (like tr) with Ctrl+C, you go right to Bash, not this shell. I'm not aware of a way to send signals from a process I didn't create (tr), otherwise I would tell it to catch all Ctrl+C signals and send a Ctrl+D signal instead (end stdin input)
 
 **Function headers**
 - parse.h
