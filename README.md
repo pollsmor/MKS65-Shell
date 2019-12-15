@@ -7,7 +7,7 @@ Shell project for Systems
   - ``` cd ``` is hardcoded; has error checking
 - Commands can be separated via semicolons
   - Leading and trailing spaces are removed. That means something like <pre>```          ls -al                    ;           echo B```</pre> works.
-    - Note: this only works with an entire command, not individual tokens. ls         -al would not work.
+    - Note: this only works with an entire command, not individual tokens. <pre>'''ls         -al'''</pre> would not work.
     - Note 2: this doesn't work for redirection and piping either due to the parsing method. There must be only one space to the left and right of a <, >, or |.
 
 - Basic input and output redirection (only <, >, and < >)
