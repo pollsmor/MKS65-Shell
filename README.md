@@ -18,7 +18,7 @@ Shell project for Systems
 - The use of status macros (not sure how I can implement them into my program)
 
 **Other bugs**
-- When feeding in a test commands file via ./myshell < {file}, at the end it prints the current working directory the same amount of times as commands in the file. It doesn't happen when I don't print the cwd in main.c, but I think the way it is the better of two evils.
+- When feeding in a test commands file via ./myshell < {file}, at the end it prints the current working directory the same amount of times as commands in the file. It doesn't happen when I don't print the cwd in main.c, but I think how it currently works is the better of two evils.
 - When exiting from programs that continuously read from stdin (like tr) with Ctrl+C, you go right to Bash, not this shell.
 
 **Function headers**
